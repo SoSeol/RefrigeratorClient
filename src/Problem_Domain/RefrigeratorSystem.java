@@ -17,138 +17,11 @@ public class RefrigeratorSystem {
 	private static FoodList flist=null;
 	private static MessageList mlist=null;
 
-	public static void main(String[] args) {			
-/*
-		ulist = new UserList();
-		flist = new FoodList();
-		mlist = new MessageList();
-	
-		User loginUser;
-*/
-						
+	public static void RefrigeratorSystem(UserList ulist,FoodList flist,MessageList mlist) {
 		//리스트 read
-		ulist = readUser();
-		flist = readFood();
-		mlist = readMessage();			
-		
-		User loginUser = loginMode(); // userlist로 이동 고려
-		//messageMode(); //메세지 프린트, 사용자에 맞는 메세지 출력 or 그냥 메세지 출력, message로 이동 고려
-		menuMode(loginUser); //user로 이동 고려
-		
-		//리스트 write
-		writeUser(ulist);
-		writeFood(flist);
-		writeMessage(mlist);
-	}
-
-	/* write : serialization
-	 * read : deserialzation
-	 */
-	private static UserList readUser() {
-		
-		UserList userlist = null;
-		FileInputStream fis;
-		try {
-			fis = new FileInputStream("UserList.ser");
-			BufferedInputStream bis = new BufferedInputStream(fis);
-			ObjectInputStream in = new ObjectInputStream(bis);
-			userlist = (UserList)in.readObject();
-			in.close();
-		} catch (FileNotFoundException e) {
-			userlist = new UserList();
-			//e.printStackTrace();
-		} catch(IOException e) {
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {			
-			e.printStackTrace();
-		}
-		return userlist;
-	}
-	
-	private static void writeUser(UserList userlist) {
-		FileOutputStream fos;
-		try {
-			fos = new FileOutputStream("UserList.ser");
-			BufferedOutputStream bos = new BufferedOutputStream(fos);
-			ObjectOutputStream out = new ObjectOutputStream(bos);
-			
-			out.writeObject(userlist);
-			out.close();
-		} catch (Exception e) {		
-			e.printStackTrace();
-		}			
-	}
-	
-	private static FoodList readFood() {
-		
-		FoodList foodlist = null;
-		FileInputStream fis;
-		try {
-			fis = new FileInputStream("FoodList.ser");
-			BufferedInputStream bis = new BufferedInputStream(fis);
-			ObjectInputStream in = new ObjectInputStream(bis);
-			
-			foodlist = (FoodList)in.readObject();
-			in.close();
-		} catch (FileNotFoundException e) {
-			foodlist = new FoodList();
-			//e.printStackTrace();
-		} catch(IOException e) {
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {			
-			e.printStackTrace();
-		}
-		return foodlist;
-	}
-	
-	private static void writeFood(FoodList foodlist) {
-		FileOutputStream fos;
-		try {
-			fos = new FileOutputStream("FoodList.ser");
-			BufferedOutputStream bos = new BufferedOutputStream(fos);
-			ObjectOutputStream out = new ObjectOutputStream(bos);
-			
-			out.writeObject(foodlist);
-			out.close();
-		} catch (Exception e) {			
-			e.printStackTrace();
-		}			
-	}
-	
-	private static MessageList readMessage() {
-		
-		MessageList messagelist = null;
-		FileInputStream fis;
-		try {
-			fis = new FileInputStream("MessageList.ser");
-			BufferedInputStream bis = new BufferedInputStream(fis);
-			ObjectInputStream in = new ObjectInputStream(bis);
-			
-			messagelist = (MessageList)in.readObject();
-			in.close();
-		} catch (FileNotFoundException e) {
-			messagelist = new MessageList();
-			//e.printStackTrace();
-		} catch(IOException e) {
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {			
-			e.printStackTrace();
-		}
-		return messagelist;
-	}
-
-	private static void writeMessage(MessageList messagelist) {
-		FileOutputStream fos;
-		try {
-			fos = new FileOutputStream("MessageList.ser");
-			BufferedOutputStream bos = new BufferedOutputStream(fos);
-			ObjectOutputStream out = new ObjectOutputStream(bos);
-			
-			out.writeObject(messagelist);
-			out.close();
-		} catch (Exception e) {			
-			e.printStackTrace();
-		}			
+		ulist = ulist;
+		flist = flist;
+		mlist = mlist;
 	}
 	
 	/**
@@ -288,14 +161,14 @@ public class RefrigeratorSystem {
 				System.out.print("(Name : 2, ID : 0, PW : 1)");
 				type = input.nextInt();
 				String modifyString = input.nextLine();
-				ulist.modify(admin.ModifyUser(index,type,modifyString),admin.getName());
+				//ulist.modify(admin.ModifyUser(index,type,modifyString),admin.getName());
 				System.out.println("User Modify Complete!");
 				break;
 			case 3:
 				System.out.println("Delete User");
 				System.out.print("Index : ");
 				index = input.nextInt();
-				admin.DeleteUser(index);
+				//admin.DeleteUser(index);
 				System.out.println("User Delete Complete!");
 				break;
 			case 0:
@@ -364,7 +237,7 @@ public class RefrigeratorSystem {
 		String[] date = input.nextLine().split("/");
 		expiration.set(Integer.parseInt(date[0]),Integer.parseInt(date[1]),Integer.parseInt(date[2]));	
 		
-		user.registerItem(name,quantity,weight,calories,expiration);
+		//user.registerItem(name,quantity,weight,calories,expiration);
 		
 		input.close();	
 	}

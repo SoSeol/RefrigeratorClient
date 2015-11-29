@@ -70,7 +70,6 @@ public class UserList
 		}
 		else
 			System.out.println("ID exists!");
-		
 	}
 	
 	/**
