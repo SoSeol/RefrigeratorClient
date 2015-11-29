@@ -34,16 +34,6 @@ public class Packet implements ChatIF {
 				// [stage1] Login
 				System.out.println("Welcome to HW_Refrigerator_System!!");
 				gui.Login();
-				while (true) {
-					try {
-						Thread.sleep(1000);
-					}catch(InterruptedException e){
-						System.out.println(e.getMessage()); //sleep 메소드가 발생하는 InterruptedException 
-					}
-					System.out.print(".");
-					if (gui.GetStatus() == UserStatus.MENU)
-						break;
-				}
 				// [stage2] show MsgList
 				gui.GetMessage();
 	
@@ -74,6 +64,7 @@ public class Packet implements ChatIF {
 			// Login fail
 			if (Packet[1].equals("FALSE")) {
 				System.out.println("Login Fail!!!");
+				gui.Login();
 			}
 			// Login success( Status change)
 			else if (Packet[1].equals("TRUE")) {

@@ -30,6 +30,17 @@ public class GUI {
 		pw = scan.nextLine();
 
 		client.handleMessageFromClientUI("LOGIN_" + id + "_" + pw);
+		
+		while (true) {
+			try {
+				Thread.sleep(1000);
+			}catch(InterruptedException e){
+				System.out.println(e.getMessage()); //sleep 메소드가 발생하는 InterruptedException 
+			}
+			System.out.print(".");
+			if (GetStatus() == UserStatus.MENU)
+				break;
+		}
 	}
 
 	public void FoodModify()
@@ -84,9 +95,9 @@ public class GUI {
 		//바운더리 작업
 		
 		//번호로 사용할 경우
-		//client.handleMessageFromClientUI("FOOD_MODIFY_"+number+"_"+change_data);
+		//client.handleMessageFromClientUI("FOOD_MODIFY_"+foodname+"_"+number+"_"+change_data);
 		//문자열로 사용할 경우
-		client.handleMessageFromClientUI("FOOD_MODIFY_"+change+"_"+change_data);
+		client.handleMessageFromClientUI("FOOD_MODIFY_"+foodname+"_"+change+"_"+change_data);
 
 	}
 	
