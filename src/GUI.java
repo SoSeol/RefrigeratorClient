@@ -22,25 +22,19 @@ public class GUI {
 	}
 
 	public void Login() {
-		Scanner scan = new Scanner(System.in);
-
-		System.out.print("ID : ");
-		id = scan.nextLine();
-		System.out.print("PW : ");
-		pw = scan.nextLine();
-
-		client.handleMessageFromClientUI("LOGIN_" + id + "_" + pw);
-		
-		while (true) {
-			try {
-				Thread.sleep(1000);
-			}catch(InterruptedException e){
-				System.out.println(e.getMessage()); //sleep 메소드가 발생하는 InterruptedException 
-			}
-			System.out.print(".");
-			if (GetStatus() == UserStatus.MENU)
-				break;
+		if(GetStatus() == UserStatus.LOGIN)
+		{
+			Scanner scan = new Scanner(System.in);
+	
+			System.out.print("ID : ");
+			id = scan.nextLine();
+			System.out.print("PW : ");
+			pw = scan.nextLine();
+	
+			client.handleMessageFromClientUI("LOGIN_" + id + "_" + pw);
+			WaitLogin();
 		}
+		
 	}
 
 	public void FoodModify()
@@ -58,7 +52,7 @@ public class GUI {
 		System.out.println("1.Name       2.Quantity  3.Weight          4.Calories");
 		System.out.println("5.FreezeType 6.Floor     7.ExpirationDate  8.Inserted Date");
 		System.out.println("9.Memo       10.Method   11.isExpired      12.isProhibited");
-		number = scan.nextInt();
+		number = Integer.parseInt(scan.nextLine());
 		System.out.println("Input new data");
 		change_data = scan.nextLine();
 		
@@ -98,7 +92,7 @@ public class GUI {
 		//client.handleMessageFromClientUI("FOOD_MODIFY_"+foodname+"_"+number+"_"+change_data);
 		//문자열로 사용할 경우
 		client.handleMessageFromClientUI("FOOD_MODIFY_"+foodname+"_"+change+"_"+change_data);
-
+		WaitResponse();
 	}
 	
 	public void FoodRegister()
@@ -152,7 +146,8 @@ public class GUI {
 		
 		client.handleMessageFromClientUI("FOOD_REGISTER_"+foodname+"_"+quantity+"_"+Weight+"_"+calories+"_"+freezeType
 				+"_"+floor+"_"+expirationDate+"_"+insertedDate+"_"+memo+"_"+method+"_"+isExpired+"_"+isProhibited);
-
+		
+		WaitResponse();
 	}
 	
 	public String boundary_test(String st1)
@@ -183,6 +178,7 @@ public class GUI {
 		System.out.print("Delete Food Name:");
 		name = scan.nextLine();
 		client.handleMessageFromClientUI("FOOD_DELETE_" + name);
+		WaitResponse();
 	}
 
 	public void FoodSearch() {
@@ -193,6 +189,7 @@ public class GUI {
 		System.out.print("Search Food Name:");
 		name = scan.nextLine();
 		client.handleMessageFromClientUI("FOOD_SEARCH_" + name);
+		WaitResponse();
 	}
 
 	// UserModify
@@ -225,6 +222,7 @@ public class GUI {
 
 		client.handleMessageFromClientUI("USER_MODIFY" + id + "_" + change
 				+ "_" + change_data);
+		WaitResponse();
 	}
 
 	public void UserDelete() {
@@ -235,6 +233,7 @@ public class GUI {
 		id = scan.nextLine();
 
 		client.handleMessageFromClientUI("USER_DELETE_" + id);
+		WaitResponse();
 	}
 
 	public void UserRegister() {
@@ -248,6 +247,7 @@ public class GUI {
 		pw = scan.nextLine();
 
 		client.handleMessageFromClientUI("USER_REGISTER" + id + "_" + pw);
+		WaitResponse();
 	}
 	
 	/**
@@ -259,7 +259,6 @@ public class GUI {
 		int choice;
 
 		System.out.println("=========Menu=========");
-		GetFood();
 		System.out.println("1.LogOut");
 		System.out.println("2.Food 변경");
 		System.out.println("3.Food 삭제");
@@ -312,12 +311,94 @@ public class GUI {
 		}
 		return choice;
 	}
+	
+	public void WaitLogin()
+	{
+		while(true)
+		{
+			try {
+				Thread.sleep(1000);
+			}catch(InterruptedException e){
+				System.out.println(e.getMessage()); //sleep 메소드가 발생하는 InterruptedException 
+			}
+			System.out.print(".");
+			
+			if(GetStatus()==UserStatus.LOGIN_FAIL)
+			{
+				SetStatus(UserStatus.LOGIN);
+				break;
+			}
+			else if(GetStatus()==UserStatus.MENU)
+			{
+				break;
+			}
+		}
+	}
+	
+	public void WaitMessage()
+	{
+		System.out.println("Loading Message List");
+		while(true)
+		{
+			try {
+				Thread.sleep(1000);
+			}catch(InterruptedException e){
+				System.out.println(e.getMessage()); //sleep 메소드가 발생하는 InterruptedException 
+			}
+			System.out.print(".");
+			
+			if(GetStatus()==UserStatus.MSG_LOAD)
+			{
+				SetStatus(UserStatus.MENU);
+				break;
+			}
+		}
+	}
+	
+	public void WaitFood()
+	{
+		System.out.println("Loading Food List");
+		while(true)
+		{
+			try {
+				Thread.sleep(1000);
+			}catch(InterruptedException e){
+				System.out.println(e.getMessage()); //sleep 메소드가 발생하는 InterruptedException 
+			}
+			System.out.print(".");
+			
+			if(GetStatus()==UserStatus.FOOD_LOAD)
+			{
+				SetStatus(UserStatus.MENU);
+				break;
+			}
+		}
+	}
 
+	public void WaitResponse()
+	{
+		while(true)
+		{
+			try {
+				Thread.sleep(1000);
+			}catch(InterruptedException e){
+				System.out.println(e.getMessage()); //sleep 메소드가 발생하는 InterruptedException 
+			}
+			//System.out.print(".");
+			if(GetStatus()==UserStatus.DONE)
+			{
+				SetStatus(UserStatus.MENU);
+				break;
+			}
+		}
+	}
 	public void GetMessage() {
 		client.handleMessageFromClientUI("MSG_SHOW");
+		WaitMessage();
 	}
 
 	public void GetFood() {
 		client.handleMessageFromClientUI("FOOD_SHOW");
+		WaitFood();
 	}
 }

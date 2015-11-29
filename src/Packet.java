@@ -34,10 +34,14 @@ public class Packet implements ChatIF {
 				// [stage1] Login
 				System.out.println("Welcome to HW_Refrigerator_System!!");
 				gui.Login();
+				
 				// [stage2] show MsgList
 				gui.GetMessage();
-	
-				// [stage3] Menu
+				
+				// [stage3] show FoodList
+				gui.GetFood();
+				
+				// [stage4] Menu
 				while(true)
 				{
 					result = gui.Menu();
@@ -64,12 +68,13 @@ public class Packet implements ChatIF {
 			// Login fail
 			if (Packet[1].equals("FALSE")) {
 				System.out.println("Login Fail!!!");
+				gui.SetStatus(UserStatus.LOGIN_FAIL);
 				gui.Login();
 			}
 			// Login success( Status change)
 			else if (Packet[1].equals("TRUE")) {
-				gui.SetStatus(UserStatus.MENU);
 				System.out.println("Login Sucess!!!");
+				gui.SetStatus(UserStatus.MENU);
 			}
 		}
 		// FOOD 부분
@@ -81,10 +86,12 @@ public class Packet implements ChatIF {
 				if(result.equals("TRUE"))
 				{
 					System.out.println("Food Modify Success");
+					gui.SetStatus(UserStatus.DONE);
 				}
 				else if(result.equals("FALSE"))
 				{
 					System.out.println("Food Modify Fail");
+					gui.SetStatus(UserStatus.DONE);
 				}
 			}
 			else if(cmd2.equals("DELETE"))
@@ -93,10 +100,12 @@ public class Packet implements ChatIF {
 				if(result.equals("TRUE"))
 				{
 					System.out.println("Food delete Success");
+					gui.SetStatus(UserStatus.DONE);
 				}
 				else if(result.equals("FALSE"))
 				{
 					System.out.println("Food delete Fail");
+					gui.SetStatus(UserStatus.DONE);
 				}
 			}
 			else if(cmd2.equals("REGISTER"))
@@ -105,10 +114,12 @@ public class Packet implements ChatIF {
 				if(result.equals("TRUE"))
 				{
 					System.out.println("Food Register Success");
+					gui.SetStatus(UserStatus.DONE);
 				}
 				else if(result.equals("FALSE"))
 				{
 					System.out.println("Food Register Fail");
+					gui.SetStatus(UserStatus.DONE);
 				}
 			}
 			// Print Food List
@@ -116,6 +127,7 @@ public class Packet implements ChatIF {
 			{
 				System.out.println("-----Food List-----");
 				System.out.println(cmd2);
+				gui.SetStatus(UserStatus.FOOD_LOAD);
 			}
 		}
 		//USER 부분
@@ -123,30 +135,48 @@ public class Packet implements ChatIF {
 		{
 			String cmd1 = Packet[1];
 			String cmd2 = Packet[2];
-					
+						
 			if(cmd1.equals("MODIFY"))
 			{
 				if(cmd2.equals("TRUE"))
+				{
 					System.out.println("USER MODIFY Sucess!!!");
+					gui.SetStatus(UserStatus.DONE);
+				}
 				if(cmd2.equals("FALSE"))
+				{
 					System.out.println("USER MODIFY FAIL !!!");
+					gui.SetStatus(UserStatus.DONE);
+				}
 			}
 			else if(cmd1.equals("DELETE"))
 			{
 				if(cmd2.equals("TRUE"))
+				{
 					System.out.println("USER DELETE Sucess!!!");
+					gui.SetStatus(UserStatus.DONE);
+				}
 				if(cmd2.equals("FALSE"))
-					System.out.println("USER DELETE FAIL !!!");			
+				{
+					System.out.println("USER DELETE FAIL !!!");
+					gui.SetStatus(UserStatus.DONE);
+				}
 			}
 			else if(cmd1.equals("REGISTER"))
 			{
 				if(cmd2.equals("TRUE"))
+				{
 					System.out.println("USER REGISTER Sucess!!!");
+					gui.SetStatus(UserStatus.DONE);
+				}
 				if(cmd2.equals("FALSE"))
+				{
 					System.out.println("USER REGISTER FAIL !!!");
+					gui.SetStatus(UserStatus.DONE);
+				}
 			}
 		}
-
+	
 		// 메세지 부분
 		else if (cmd.equals("MSG")) {
 			String cmd2 = Packet[1];
@@ -154,21 +184,23 @@ public class Packet implements ChatIF {
 				String Mlist = Packet[2];
 				System.out.println("-----Message List-----");
 				System.out.println(Mlist);
+				gui.SetStatus(UserStatus.MSG_LOAD);
 			} 
 			else if (cmd2.equals("DELETE")) 
 			{
 				String result = Packet[2];
-
+	
 				// Old message delete success
 				if (result.equals("TRUE")) {
 					System.out.println("Message Delete Success");
+					gui.SetStatus(UserStatus.DONE);
 				}
 				// delete fail
 				else if (result.equals("FALSE")) {
 					System.out.println("Message Delete fail :(");
+					gui.SetStatus(UserStatus.DONE);
 				}
 			}
 		}
 	}
-
 }
