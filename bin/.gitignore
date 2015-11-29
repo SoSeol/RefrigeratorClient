@@ -5,3 +5,7 @@
 /Essential/
 /Synchronize.class
 /Packet.class
+/Packet$Status.class
+/GUI.class
+/GUI$Status.class
+/UserStatus.class
