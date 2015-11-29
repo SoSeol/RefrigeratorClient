@@ -1,23 +1,22 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Scanner;
+
+import client.ChatClient;
 
 import common.ChatIF;
-import Essential.*;
-import Problem_Domain.*;
-import client.*;
 
-public class Synchronize implements ChatIF {
-	private RefrigeratorSystem refriger;
+public class Packet implements ChatIF {
+	
 	private ChatClient client;
-	private User MyUser;
-
+	
 	/**
 	 * Construct
 	 * @param host
 	 * @param port
 	 */
-	public Synchronize(String host, int port) {
+	public Packet(String host, int port) {
 		try {
 			client = new ChatClient(host, port, this);
 		} catch (IOException exception) {
@@ -27,8 +26,17 @@ public class Synchronize implements ChatIF {
 		}
 	}
 
-	public void GetUserList() {
-		client.handleMessageFromClientUI("GET_USER");
+	public void Login() {
+		Scanner scan = new Scanner(System.in);
+		String id = "";
+		String pw = "";
+		
+		System.out.println("ID : ");
+		id = scan.nextLine();
+		System.out.println("PW : ");
+		pw = scan.nextLine();
+		
+		client.handleMessageFromClientUI("LOGIN_"+id+"_"+pw);
 	}
 
 	/**
@@ -50,8 +58,9 @@ public class Synchronize implements ChatIF {
 					new InputStreamReader(System.in));
 			String message;
 
-			//stage1 Get User list
-			GetUserList();
+			//stage1 Login
+			System.out.println("Welcome to HW_Refrigerator_System!!");
+			Login();
 			while (true) {
 				message = fromConsole.readLine();
 				client.handleMessageFromClientUI(message);
@@ -65,10 +74,36 @@ public class Synchronize implements ChatIF {
 		String[] Packet = message.split("_");
 		String cmd = Packet[0];
 		
-		if(cmd.equals("ULIST"))
+		//Login
+		if(cmd.equals("LOGIN"))
 		{
-			String Ulist = Packet[1];
-			DisplayUser(Ulist);
+			//Login fail
+			if(Packet[1].equals("0"))
+			{
+				Login();
+			}
+			//Login success
+			else
+			{
+				System.out.println("Login Sucess!!!");
+			}
+		}
+		//Get Food List
+		else if(cmd.equals("FLIST"))
+		{
+			String Flist = Packet[1];
+			DisplayFood(Flist);
+		}
+		//Get Message List
+		else if(cmd.equals("MLIST"))
+		{
+			String Mlist = Packet[1];
+			DisplayMessage(Mlist);
+		}
+		//
+		else if(cmd.equals(""))
+		{
+			
 		}
 		System.out.println("> " + message);
 	}
@@ -76,6 +111,18 @@ public class Synchronize implements ChatIF {
 	public void DisplayUser(String message)
 	{
 		System.out.println("User List");
+		System.out.println(message);
+	}
+	
+	public void DisplayMessage(String message)
+	{
+		System.out.println("Message List");
+		System.out.println(message);
+	}
+	
+	public void DisplayFood(String message)
+	{
+		System.out.println("Food List");
 		System.out.println(message);
 	}
 }

@@ -23,7 +23,7 @@ public class ClientConsole
     String host = "127.0.0.1";
     int port = 31337;  //The port number
 
-    Synchronize chat= new Synchronize(host, port);
+    Packet chat= new Packet(host, port);
     chat.accept();  //Wait for console data
   }
   
