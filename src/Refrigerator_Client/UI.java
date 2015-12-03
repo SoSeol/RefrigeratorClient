@@ -495,11 +495,12 @@ public class UI {
 			change_data = boundary_test(change_data);
 			break;
 		case 3:
-			change = "calaries";
+			change = "calories";
 			change_data = boundary_test(change_data);
 			break;
 		case 4:
 			change = "freezeType";
+			change_data = boundary_test(change_data);
 			break;
 		case 5:
 			change = "floor";
