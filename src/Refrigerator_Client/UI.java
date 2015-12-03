@@ -20,7 +20,7 @@ public class UI {
 
 	public UI(ChatClient c) {
 		scan = new BufferedReader(new InputStreamReader(System.in));
-		// client = c;
+		client = c;
 		status = UserStatus.LOGIN;
 	}
 
