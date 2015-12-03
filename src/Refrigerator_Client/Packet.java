@@ -138,7 +138,10 @@ public class Packet implements ChatIF {
 			}
 			else if (cmd2.equals("SEARCH"))
 			{
-				System.out.println(Packet[2]);
+				if(Packet[2]!=null)
+					System.out.println(Packet[2]);
+				else
+					System.out.println("Not found!");
 				ui.SetStatus(UserStatus.DONE);
 			}
 			else {

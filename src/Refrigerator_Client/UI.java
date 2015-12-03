@@ -63,6 +63,7 @@ public class UI {
 		if (GetStatus() == UserStatus.LOGIN) {
 			 //Scanner scan = new Scanner(System.in);
 			
+			
 			System.out.print("ID : ");
 			id = GetConsole();
 			System.out.print("PW : ");
@@ -326,6 +327,7 @@ public class UI {
 
 		for(;;)
 		{
+			/*
 			if (select == 1) {
 				change = "pw";
 				System.out.print("Change pw : ");
@@ -342,6 +344,42 @@ public class UI {
 				System.out.print("pw:1! name:2! try again! : ");
 				select = Integer.parseInt(GetConsole());
 			}
+			*/
+			try
+						{
+							System.out.print("1.change pw 2.change name 0.return \nChange what?(choose number)>");
+							try
+							{
+								select = Integer.parseInt(GetConsole());
+							}
+							catch(NumberFormatException nfe)
+							{
+								throw new Exception("Wrong input.");
+							}
+							if (select == 1) {
+								change = "pw";
+								System.out.print("Change pw : ");
+								change_data = GetConsole();
+								if(change_data.length() == 0) throw new Exception("You enetered nothing.");
+								break;
+							}
+							
+							if (select == 2) {
+								change = "name";
+								System.out.print("Change name : ");
+								change_data = GetConsole();
+								if(change_data.length() == 0) throw new Exception("You enetered nothing.");
+								break;
+							}
+							
+							if (select == 0)
+								return;
+						}
+						catch (Exception e)
+						{
+							System.err.println(e.getMessage() + " Try again.");
+			 				select = Integer.parseInt(GetConsole());
+			 			}
 		}
 		
 		client.handleMessageFromClientUI("USER_INFO_" + id + "_" + change + "_"
