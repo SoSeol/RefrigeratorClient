@@ -44,6 +44,7 @@ public class Packet implements ChatIF {
 				{
 					Trying = 0;
 					// [stage2] Get Message
+					System.out.println("=========HWRM=========");
 					ui.GetMessage();
 					while (true) {
 						// [stage3] show FoodList
@@ -67,7 +68,8 @@ public class Packet implements ChatIF {
 
 	/* p@ 문자열 말고 객체를 출력하면 좋지 않을까요? */
 	public void display(String message) {
-		System.out.println("> " + message);
+		//메세지 출력
+		//System.out.println("> " + message);
 
 		String[] Packet = message.split("_");
 		String cmd = Packet[0];
@@ -207,6 +209,7 @@ public class Packet implements ChatIF {
 		else if (cmd.equals("MSG")) {
 			String cmd2 = Packet[1];
 			if (cmd2.equals("SHOW")) {
+				//필요없어요
 				String Mlist = Packet[2];
 				System.out.println("-----Message List-----");
 				System.out.println(Mlist);

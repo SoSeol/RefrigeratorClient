@@ -1,5 +1,6 @@
 package Refrigerator_Client;
 import java.io.BufferedReader;
+import java.io.Console;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.ParseException;
@@ -61,19 +62,23 @@ public class UI {
 	public void Login() {
 		if (GetStatus() == UserStatus.LOGIN) {
 			 //Scanner scan = new Scanner(System.in);
+			
 			System.out.print("ID : ");
 			id = GetConsole();
 			System.out.print("PW : ");
 			pw = GetConsole();
+			
 			/*
 			 * p@ 클라이언트를 cmd에서 돌려야 작동(eclipse에서는 안됨ㅠ); 이클립스에서 구동하려면 위에 5줄 주석 해제,
 			 * 밑에 6줄 주석처리
 			 */
-//			Console secret = System.console();
-//			if (secret == null)
-//				System.err.println("Console fail");
-//			id = secret.readLine("%s", "ID : ");
-//			pw = new String(secret.readPassword("%s", "PW : "));			
+			/*
+			Console secret = System.console();
+			if (secret == null)
+				System.err.println("Console fail");
+			id = secret.readLine("%s", "ID : ");
+			pw = new String(secret.readPassword("%s", "PW : "));		
+			*/	
 
 			client.handleMessageFromClientUI("LOGIN_" + id + "_" + pw);
 			WaitLogin();
@@ -103,8 +108,9 @@ public class UI {
 		//Scanner scan = new Scanner(System.in);		
 		int choice=0;
 		
-		// System.out.println("=========Menu=========");
-
+		//System.out.println("=========HWRM=========");
+		//GetMessage();
+		System.out.println("=========Menu=========");		
 		if (isAuthority())
 		{
 			System.out.println("1.User Manage");
@@ -156,8 +162,8 @@ public class UI {
 					System.out.print("Choose number> ");
 					break;
 				}
-		}while (choice < 0 || choice > 6);
-
+				
+		}while (choice < 0 || choice > 6);		
 		return choice;
 	}
 
@@ -194,7 +200,7 @@ public class UI {
 
 		System.out.println("->User Manage");
 		System.out.println("+User++++++++++++++");
-		//GetUser();
+		GetUser();
 		System.out.println("+++++++++++++++++++");
 		System.out
 				.println("1.register user\t2.modify user\t3.delete user\t0.back");
@@ -210,12 +216,12 @@ public class UI {
 				break;
 			case 2:
 				System.out.print("-->modify user");
-				GetUser();
+				//GetUser();
 				UserModify();
 				break;
 			case 3:
 				System.out.print("-->delete user");
-				GetUser();
+				//GetUser();
 				UserDelete();
 				break;
 			default:
@@ -263,7 +269,7 @@ public class UI {
 
 		System.out.print("Select index : ");
 		idx = GetConsole();
-		System.out.print("How to modify(1.pw, 2.name) : ");
+		System.out.print("How to modify(1.pw, 2.name 0.back) : ");
 		select = Integer.parseInt(GetConsole());
 
 		for(;;) {
@@ -277,7 +283,9 @@ public class UI {
 				System.out.print("Change name : ");
 				change_data = GetConsole();
 				break;
-			} else {
+			} else if(select == 0)
+				return;
+			else {
 				System.out.print("pw:1! name:2! try again! : ");
 				select = Integer.parseInt(GetConsole());
 			}
@@ -313,7 +321,7 @@ public class UI {
 		System.out.println(id + "\t********\t" + name);
 		// p@ 보류 getUser(id);
 		System.out
-				.print("1.change pw 2.change name\nChange what?(choose number)>");
+				.print("1.change pw 2.change name 0.back\nChange what?(choose number)>");
 		select = Integer.parseInt(GetConsole());
 
 		for(;;)
@@ -328,6 +336,8 @@ public class UI {
 				System.out.print("Change name : ");
 				change_data = GetConsole();
 				break;
+			} else if(select == 0) {
+				return;
 			} else {
 				System.out.print("pw:1! name:2! try again! : ");
 				select = Integer.parseInt(GetConsole());
@@ -410,7 +420,7 @@ public class UI {
 		int select;
 
 		System.out.println("->Edit Food");
-		System.out.println("-Food--------------");
+		//System.out.println("-Food--------------");
 		GetFood();
 		if(GetStatus()==UserStatus.FOOD_EMPTY)
 		{
@@ -454,27 +464,28 @@ public class UI {
 		String foodname;
 		int select = 0;
 		String change = "";
-		String change_data;
+		String change_data="";
 
-		GetFood();
+		//GetFood();
 		if(GetStatus()==UserStatus.FOOD_EMPTY)
 		{
 			this.SetStatus(UserStatus.MENU);
 			return;
 		}
 		
-		System.out.print("Insert idx for Modify : ");
+		System.out.print("\nInsert idx for Modify : ");
 		foodname = GetConsole();
 		System.out.println("How to modify?");
 		System.out
 				.println("1.Quantity\t2.Weight\t3.Calories\t4.Location(Freezer/Cooler)\t5.Location(Floor)\t6.Memo\t0.Back");
 		select = Integer.parseInt(GetConsole());
-		System.out.print("Change data : ");
-		change_data = GetConsole();
-
+		if(select!=0) {
+			System.out.print("Change data : ");
+			change_data = GetConsole();
+		}
 		switch (select) {
 		case 0:
-			// back
+			return;	
 		case 1:
 			change = "quantity";
 			change_data = boundary_test(change_data);
@@ -497,6 +508,8 @@ public class UI {
 			change = "memo";
 			break;
 		}
+		
+		
 		// 바운더리 작업
 
 		/* p@ 숫자로 할지 문자열로 할지 보다 파라미터 전달 형식을 좀더 효율적으로 다듬었으면 좋겠어요 코드 분석이 어렵습니다. */
@@ -551,7 +564,7 @@ public class UI {
 	private void Memo() {
 		//Scanner scan = new Scanner(System.in);
 		String message;
-		int idx = 0;
+		/*int idx = 0;
 		GetFood();
 		if(GetStatus()==UserStatus.FOOD_EMPTY)
 		{
@@ -559,14 +572,19 @@ public class UI {
 			return;
 		}
 		System.out.println("Write Food number: ");
-		idx = Integer.parseInt(GetConsole());
+		idx = Integer.parseInt(GetConsole());*/
 		
-		System.out.print("Write Memo:");
+		System.out.print("Write Memo : ");
 		message = GetConsole();
 		
-		client.handleMessageFromClientUI("MSG_MEMO_" +idx+"_"+ message);
-
-		WaitResponse();
+		
+		//client.handleMessageFromClientUI("MSG_MEMO_" +idx+"_"+ message);
+		if(message.length()>0) {
+			client.handleMessageFromClientUI("MSG_MEMO_" + message);
+			WaitResponse();
+		}
+		else
+			return;
 	}
 
 	public void WaitMessage() {
