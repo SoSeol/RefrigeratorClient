@@ -5,7 +5,6 @@
 package OCSF.Common;
 
 import OCSF.Client.ChatIF;
-import OCSF.Common.*;
 
 import java.io.*;
 
@@ -40,7 +39,8 @@ public class ChatClient extends AbstractClient {
 	 *            The interface type variable.
 	 */
 
-	public ChatClient(String host, int port, ChatIF clientUI) throws IOException {
+	public ChatClient(String host, int port, ChatIF clientUI)
+			throws IOException {
 		super(host, port); // Call the superclass constructor
 		this.clientUI = clientUI;
 		openConnection();

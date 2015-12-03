@@ -1,12 +1,10 @@
 package Refrigerator_Client;
-import java.io.IOException;
 
+import java.io.IOException;
 import OCSF.Client.ChatIF;
 import OCSF.Common.ChatClient;
 
 public class Packet implements ChatIF {
-
-	/* p@ gui ui로 바꿨습니다 */
 
 	private ChatClient client;
 	private UI ui;
@@ -15,7 +13,6 @@ public class Packet implements ChatIF {
 		try {
 			client = new ChatClient(host, port, this);
 			ui = new UI(client);
-
 		} catch (IOException exception) {
 			System.out.println("Error: Can't setup connection!"
 					+ " Terminating client.");
@@ -23,41 +20,36 @@ public class Packet implements ChatIF {
 		}
 	}
 
+	// Process from login to Exit
 	public void accept() {
 		try {
-			// BufferedReader fromConsole = new BufferedReader(new
-			// InputStreamReader(System.in));
-			// String message;
 			int result = 0;
 			int Trying = 0;
 			System.out.println("Welcome to HW_Refrigerator_System!");
-			// [stage1] Login
-			while(true)
-			{
+
+			while (true) {
 				ui.Login();
-				if(ui.GetStatus() != UserStatus.MENU)
-				{
+				if (ui.GetStatus() != UserStatus.MENU) {
 					Trying++;
-					System.out.println("Trying "+Trying+"/3");
+					System.out.println("Trying " + Trying + "/3");
 				}
-				if(ui.GetStatus() == UserStatus.MENU)
-				{
+				if (ui.GetStatus() == UserStatus.MENU) {
 					Trying = 0;
-					// [stage2] Get Message
-					System.out.println("=========HWRM=========");
+					// main menu
+					System.out.println("=============H W R M============");
+					// At login, print Messages
 					ui.GetMessage();
 					while (true) {
-						// [stage3] show FoodList
 						result = ui.Menu();
 						if (result == 0)
 							break;
 					}
 					System.exit(0);
 				}
-				
-				if(Trying == 3)
-				{
-					System.out.println("Unable to Login to Server after 3 attempts. exit.");
+
+				if (Trying == 3) {
+					System.out
+							.println("Unable to Login to Server after 3 attempts. exit.");
 					System.exit(0);
 				}
 			}
@@ -66,52 +58,39 @@ public class Packet implements ChatIF {
 		}
 	}
 
-	/* p@ 문자열 말고 객체를 출력하면 좋지 않을까요? */
+	// Receive String data from Server and check Server's work result
 	public void display(String message) {
-		//메세지 출력
-		//System.out.println("> " + message);
 
 		String[] Packet = message.split("_");
+		// check login
 		String cmd = Packet[0];
-		// Login 이미 로그인
-		if(cmd.equals("ALREADY"))
-		{
-			System.out.println("Already Loged in User");
+		if (cmd.equals("ALREADY")) {
+			System.out.println("Already Logged in");
 			System.out.println(">Login Fail!!!");
 			ui.SetStatus(UserStatus.LOGIN_FAIL);
-		}
-		// Login 부분
-		// if (cmd.equals("LOGIN")) {
-		else if (Packet[0].equals("LOGIN")) {
-			// Login fail
+		} else if (Packet[0].equals("LOGIN")) {
 			if (Packet[1].equals("FALSE")) {
 				System.out.println(">Login Fail!!!");
 				ui.SetStatus(UserStatus.LOGIN_FAIL);
-				//ui.Login();
-			}
-			// Login success( Status change)
-			else if (Packet[1].equals("TRUE")) {
+			} else if (Packet[1].equals("TRUE")) {
 				System.out.println(">Login Sucess!!!");
 				ui.SetStatus(UserStatus.MENU);
-				if (Packet[2].equals("ADMINISTRATOR"))
-				{
+				if (Packet[2].equals("ADMINISTRATOR")) {
 					ui.setAuthority(true);
 					ui.setName(Packet[3]);
-				}
-				else if (Packet[2].equals("NORMALUSER"))
-				{
+				} else if (Packet[2].equals("NORMALUSER")) {
 					ui.setAuthority(false);
 					ui.setName(Packet[3]);
 				}
 			}
 		}
-		// FOOD 부분
+		// check food handle
 		else if (cmd.equals("FOOD")) {
 			String cmd2 = Packet[1];
 			if (cmd2.equals("MODIFY")) {
 				String result = Packet[2];
 				if (result.equals("TRUE")) {
-					System.out.println("Food Modify Success");
+					System.out.println("Food Modify Success!");
 					ui.SetStatus(UserStatus.DONE);
 				} else if (result.equals("FALSE")) {
 					System.out.println("Food Modify Fail");
@@ -120,126 +99,113 @@ public class Packet implements ChatIF {
 			} else if (cmd2.equals("DELETE")) {
 				String result = Packet[2];
 				if (result.equals("TRUE")) {
-					System.out.println("Food delete Success");
+					System.out.println("Food Delete Success!");
 					ui.SetStatus(UserStatus.DONE);
 				} else if (result.equals("FALSE")) {
-					System.out.println("Food delete Fail");
+					System.out.println("Food Delete Fail");
 					ui.SetStatus(UserStatus.DONE);
 				}
 			} else if (cmd2.equals("REGISTER")) {
 				String result = Packet[2];
 				if (result.equals("TRUE")) {
-					System.out.println("Food Register Success");
+					System.out.println("Food Register Success!");
 					ui.SetStatus(UserStatus.DONE);
 				} else if (result.equals("FALSE")) {
-					System.out.println("Food Register Fail");
+					System.out.println("Food Register Fail!");
 					ui.SetStatus(UserStatus.DONE);
 				}
-			}
-			else if (cmd2.equals("SEARCH"))
-			{
-				if(Packet[2]!=null)
+			} else if (cmd2.equals("SEARCH")) {
+				if (Packet[2] != null)
 					System.out.println(Packet[2]);
 				else
 					System.out.println("Not found!");
 				ui.SetStatus(UserStatus.DONE);
-			}
-			else {
-				System.out.println("-----Food List-----");
-				if(cmd2.equals("Refrigerator is empty"))
-				{
+			} else {
+				System.out.println("----------Food List----------");
+				if (cmd2.equals("Refrigerator is EMPTY!")) {
 					System.out.println("Go to menu");
 					ui.SetStatus(UserStatus.FOOD_EMPTY);
-				}
-				else
-				{
+				} else {
 					System.out.println(cmd2);
 					ui.SetStatus(UserStatus.FOOD_LOAD);
 				}
 			}
 		}
-		// USER 부분
+		// check user handle
 		else if (cmd.equals("USER")) {
 			String cmd1 = Packet[1];
 			String cmd2 = Packet[2];
 
 			if (cmd1.equals("MODIFY")) {
 				if (cmd2.equals("TRUE")) {
-					System.out.println("USER MODIFY Sucess!!!");
+					System.out.println("User Modify Sucess!");
 					ui.SetStatus(UserStatus.DONE);
 				}
 				if (cmd2.equals("FALSE")) {
-					System.out.println("USER MODIFY FAIL !!!");
+					System.out.println("User Modify Fail!");
 					ui.SetStatus(UserStatus.DONE);
 				}
 			} else if (cmd1.equals("DELETE")) {
 				if (cmd2.equals("TRUE")) {
-					System.out.println("USER DELETE Sucess!!!");
+					System.out.println("User Delete Success!");
 					ui.SetStatus(UserStatus.DONE);
 				}
 				if (cmd2.equals("FALSE")) {
-					System.out.println("USER DELETE FAIL !!!");
+					System.out.println("User Delete Fail");
 					ui.SetStatus(UserStatus.DONE);
 				}
 			} else if (cmd1.equals("REGISTER")) {
 				if (cmd2.equals("TRUE")) {
-					System.out.println("USER REGISTER Sucess!!!");
+					System.out.println("User Register Success!");
 					ui.SetStatus(UserStatus.DONE);
 				}
 				if (cmd2.equals("FALSE")) {
-					System.out.println("USER REGISTER FAIL !!!");
+					System.out.println("User Register Fail");
 					ui.SetStatus(UserStatus.DONE);
 				}
 			} else if (cmd1.equals("INFO")) {
 				if (Packet[4].equals("TRUE")) {
-					System.out.println("USER REGISTER Sucess!!!");
+					System.out.println("User Info Success!");
 					ui.SetStatus(UserStatus.DONE);
 					ui.setId(Packet[2]);
 					ui.setName(Packet[3]);
 				} else if (Packet[4].equals("FALSE")) {
-					System.out.println("USER REGISTER FAIL !!!");
+					System.out.println("User Info Fail!");
 					ui.SetStatus(UserStatus.DONE);
 				}
 				ui.SetStatus(UserStatus.DONE);
-			}
-			else
-			{
+			} else {
 				System.out.println(Packet[2]);
 				ui.SetStatus(UserStatus.USER_LOAD);
 			}
 		}
-		// 메세지 부분
+		// check message handle
 		else if (cmd.equals("MSG")) {
 			String cmd2 = Packet[1];
 			if (cmd2.equals("SHOW")) {
-				//필요없어요
 				String Mlist = Packet[2];
-				System.out.println("-----Message List-----");
+				System.out.println("----------Message List----------");
 				System.out.println(Mlist);
 				ui.SetStatus(UserStatus.MSG_LOAD);
 			} else if (cmd2.equals("MEMO")) {
 				String result = Packet[2];
 				if (result.equals("TRUE")) {
-					System.out.println("Memo Success");
+					System.out.println("Memo Success!");
 					ui.SetStatus(UserStatus.DONE);
 				}
-				
+
 				else if (result.equals("FALSE")) {
-					System.out.println("Memo fail");
+					System.out.println("Memo Fail!");
 					ui.SetStatus(UserStatus.DONE);
 				}
 				ui.SetStatus(UserStatus.DONE);
 			} else if (cmd2.equals("DELETE")) {
 				String result = Packet[2];
-
-				// Old message delete success
 				if (result.equals("TRUE")) {
-					System.out.println("Message Delete Success");
+					System.out.println("Message Delete Success!");
 					ui.SetStatus(UserStatus.DONE);
-				}
-				// delete fail
-				else if (result.equals("FALSE")) {
-					System.out.println("Message Delete fail");
+				} else if (result.equals("FALSE")) {
+					System.out.println("Message Delete Fail!");
 					ui.SetStatus(UserStatus.DONE);
 				}
 				ui.SetStatus(UserStatus.DONE);
