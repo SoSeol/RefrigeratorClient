@@ -61,30 +61,31 @@ public class UI {
 	public void Login() {
 		if (GetStatus() == UserStatus.LOGIN) {
 
+			System.out.print("ID : ");
+			id = GetConsole();
+			System.out.print("PW : ");
+			pw = GetConsole();
+
+			// cmd 콘솔에서 혹여나 안되거나 기타 이유로 로그인에서 되지 않을 경우에 아래 주석 내용 사용해서 로그인하시면
+			// 됩니다.
 			/*
-			 * cmd 콘솔에서 혹여나 안되거나 기타 이유로 로그인에서 되지 않을 경우에 아래 주석 내용 사용해서 로그인하시면
-			 * 됩니다. System.out.print("ID : "); id = GetConsole();
-			 * System.out.print("PW : "); pw = GetConsole();
+			 * Console secret = System.console(); if (secret == null)
+			 * System.err.println("Console fail"); id = secret.readLine("%s",
+			 * "ID : "); pw = new String(secret.readPassword("%s", "PW : "));
 			 */
 
-			Console secret = System.console();
-			if (secret == null)
-				System.err.println("Console fail");
-			id = secret.readLine("%s", "ID : ");
-			pw = new String(secret.readPassword("%s", "PW : "));
-						
 			client.handleMessageFromClientUI("LOGIN_" + id + "_" + pw);
 			WaitLogin();
 		}
-	}	
+	}
 
 	public void WaitLogin() {
 		while (true) {
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
-				System.out.println(e.getMessage()); 
-			}			
+				System.out.println(e.getMessage());
+			}
 			if (GetStatus().equals(UserStatus.LOGIN_FAIL)) {
 				SetStatus(UserStatus.LOGIN);
 				break;
@@ -94,9 +95,9 @@ public class UI {
 		}
 	}
 
-	public int Menu() {		
+	public int Menu() {
 		int choice = 0;
-		
+
 		System.out.println("============Menu===========");
 		if (isAuthority()) {
 			System.out.println("1.User Manage");
@@ -147,14 +148,14 @@ public class UI {
 		} while (choice < 0 || choice > 6);
 		return choice;
 	}
-	
+
 	private void MemoDelete() {
 		client.handleMessageFromClientUI("MSG_DELETEOLD");
 		WaitResponse();
 	}
 
 	private void UserManage() {
-		
+
 		int select;
 
 		System.out.println("->User Manage");
@@ -178,7 +179,7 @@ public class UI {
 				UserModify();
 				break;
 			case 3:
-				System.out.print("-->delete user");			
+				System.out.print("-->delete user");
 				UserDelete();
 				break;
 			default:
@@ -189,7 +190,7 @@ public class UI {
 		} while (select < 0);
 	}
 
-	public void UserRegister() {		
+	public void UserRegister() {
 		String id;
 		String pw;
 		String name;
@@ -214,7 +215,7 @@ public class UI {
 	}
 
 	public void UserModify() {
-		
+
 		String idx;
 		int select;
 		String change = "";
@@ -248,30 +249,29 @@ public class UI {
 		WaitResponse();
 	}
 
-	public void UserDelete() {		
+	public void UserDelete() {
 		String id = "";
 
-		System.out.print("Select index : ");		
+		System.out.print("Select index : ");
 		id = GetConsole();
-	
+
 		client.handleMessageFromClientUI("USER_DELETE_" + id);
 		WaitResponse();
 	}
 
 	private void UserInfo() {
-		
+
 		int select;
 		String change = "";
 		String change_data = "";
 		System.out.println("->User Info\nID\tPW\t\tName");
 		System.out.println(id + "\t********\t" + name);
-		
 
 		for (;;) {
-			
+
 			try {
 				System.out
-						.print("1.change pw 2.change name 0.return \nChange what?(choose number)>");
+						.print("1.change pw 2.change name 0.back\nChange what?(choose number)>");
 				try {
 					select = Integer.parseInt(GetConsole());
 				} catch (NumberFormatException nfe) {
@@ -308,12 +308,8 @@ public class UI {
 		WaitResponse();
 	}
 
-	/* p@ 더 괜찮은 메세지 핸들방식 없을까요? */
-
 	public void FoodRegister() {
-		// Scanner scan = new Scanner(System.in);
 
-		// 푸드에 대한 정보 insertedDate, isExpired, isProhibited 는 0으로 초기화
 		String foodname = "";
 		String quantity = "";
 		String Weight = "";
@@ -322,10 +318,6 @@ public class UI {
 		String floor = "";
 		String expirationDate = "";
 		String memo = "";
-		// String insertedDate = "0";
-		// String method = "";
-		// String isExpired = "0";
-		// String isProhibited = "0";
 
 		System.out.print("Food Name : ");
 		foodname = GetConsole();
@@ -342,7 +334,7 @@ public class UI {
 		calories = GetConsole();
 		calories = boundary_test(calories);
 
-		System.out.print("FreezeType(1.Refregirator 2.freezer) : ");
+		System.out.print("FreezeType(1.Cooler 2.Freezer) : ");
 		freezeType = GetConsole();
 
 		System.out.print("Location(floor) : ");
@@ -362,8 +354,6 @@ public class UI {
 		System.out.print("memo : ");
 		memo = GetConsole();
 
-		/* p@ 이런 방식 말고 다른 방식으로 데이터 파라미터를 서버에 전달했으면 좋겠습니다. */
-
 		client.handleMessageFromClientUI("FOOD_REGISTER_" + foodname + "_"
 				+ quantity + "_" + Weight + "_" + calories + "_" + freezeType
 				+ "_" + floor + "_" + expirationDate + "_" + memo);
@@ -374,7 +364,6 @@ public class UI {
 		int select;
 
 		System.out.println("->Edit Food");
-		// System.out.println("-Food--------------");
 		GetFood();
 		if (GetStatus() == UserStatus.FOOD_EMPTY) {
 			this.SetStatus(UserStatus.MENU);
@@ -413,13 +402,11 @@ public class UI {
 
 	public void FoodModify() {
 
-		// Scanner scan = new Scanner(System.in);
 		String foodname;
 		int select = 0;
 		String change = "";
 		String change_data = "";
 
-		// GetFood();
 		if (GetStatus() == UserStatus.FOOD_EMPTY) {
 			this.SetStatus(UserStatus.MENU);
 			return;
@@ -462,22 +449,14 @@ public class UI {
 			break;
 		}
 
-		// 바운더리 작업
-
-		/* p@ 숫자로 할지 문자열로 할지 보다 파라미터 전달 형식을 좀더 효율적으로 다듬었으면 좋겠어요 코드 분석이 어렵습니다. */
-
-		// 번호로 사용할 경우
-		// client.handleMessageFromClientUI("FOOD_MODIFY_"+foodname+"_"+number+"_"+change_data);
-		// 문자열로 사용할 경우
-
 		client.handleMessageFromClientUI("FOOD_MODIFY_" + foodname + "_"
 				+ change + "_" + change_data);
 		WaitResponse();
 	}
 
-	/* p@ 조금 다듬었습니다 */
+	// numbercheck
 	public String boundary_test(String st1) {
-		// Scanner scaner = new Scanner(System.in);
+
 		int num = Integer.parseInt(st1);
 
 		while (num < 0) {
@@ -489,10 +468,9 @@ public class UI {
 	}
 
 	public void FoodDelete() {
-		// Scanner scan = new Scanner(System.in);
+
 		String name;
 
-		// System.out.println("[*]Food Delete Menu selected");
 		System.out.print("Delete Food Number :");
 		name = GetConsole();
 
@@ -501,7 +479,7 @@ public class UI {
 	}
 
 	public void FoodSearch() {
-		// Scanner scan = new Scanner(System.in);
+
 		String name;
 
 		System.out.print("Insert Food Name for Search:");
@@ -513,19 +491,12 @@ public class UI {
 	}
 
 	private void Memo() {
-		// Scanner scan = new Scanner(System.in);
+
 		String message;
-		/*
-		 * int idx = 0; GetFood(); if(GetStatus()==UserStatus.FOOD_EMPTY) {
-		 * this.SetStatus(UserStatus.MENU); return; }
-		 * System.out.println("Write Food number: "); idx =
-		 * Integer.parseInt(GetConsole());
-		 */
 
 		System.out.print("Write Memo : ");
 		message = GetConsole();
 
-		// client.handleMessageFromClientUI("MSG_MEMO_" +idx+"_"+ message);
 		if (message.length() > 0) {
 			client.handleMessageFromClientUI("MSG_MEMO_" + message);
 			WaitResponse();
@@ -534,15 +505,13 @@ public class UI {
 	}
 
 	public void WaitMessage() {
-		// System.out.println("-----Message List-----");
+
 		while (true) {
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
-				System.out.println(e.getMessage()); // sleep 메소드가 발생하는
-													// InterruptedException
+				System.out.println(e.getMessage());
 			}
-			// System.out.print(".");
 
 			if (GetStatus() == UserStatus.MSG_LOAD) {
 				SetStatus(UserStatus.MENU);
@@ -552,15 +521,13 @@ public class UI {
 	}
 
 	public void WaitFood() {
-		// System.out.println("-----Food List-----");
+
 		while (true) {
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
-				System.out.println(e.getMessage()); // sleep 메소드가 발생하는
-													// InterruptedException
+				System.out.println(e.getMessage());
 			}
-			// System.out.print(".");
 
 			if (GetStatus() == UserStatus.FOOD_LOAD) {
 				SetStatus(UserStatus.MENU);
@@ -572,15 +539,13 @@ public class UI {
 	}
 
 	public void WaitUser() {
-		// System.out.println("-----User List-----");
+
 		while (true) {
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
-				System.out.println(e.getMessage()); // sleep 메소드가 발생하는
-													// InterruptedException
+				System.out.println(e.getMessage());
 			}
-			// System.out.print(".");
 
 			if (GetStatus() == UserStatus.USER_LOAD) {
 				SetStatus(UserStatus.MENU);
@@ -594,10 +559,9 @@ public class UI {
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
-				System.out.println(e.getMessage()); // sleep 메소드가 발생하는
-													// InterruptedException
+				System.out.println(e.getMessage());
 			}
-			// System.out.print(".");
+
 			if (GetStatus() == UserStatus.DONE) {
 				SetStatus(UserStatus.MENU);
 				break;
@@ -605,21 +569,19 @@ public class UI {
 		}
 	}
 
+	// messagelist receive
 	public void GetMessage() {
 		client.handleMessageFromClientUI("MSG_SHOW");
 		WaitMessage();
 	}
 
+	// foodlist receive
 	public void GetFood() {
 		client.handleMessageFromClientUI("FOOD_SHOW");
 		WaitFood();
 	}
 
-	/*
-	 * p@ 일반사용자정보를 얻기 위한 오버로딩 public void GetUser(String uid) {
-	 * client.handleMessageFromClientUI("USER_INFO_" + uid); WaitUser(); }
-	 */
-
+	// userlist receive
 	public void GetUser() {
 		client.handleMessageFromClientUI("USER_SHOW");
 		WaitUser();
